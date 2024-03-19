@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PathIn</title>
+  <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/zephyr/bootstrap.min.css">
+  <style>
+    form {
+      display: table;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 500px;
+      background-color: blue;
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+    }
+
+    p {
+      display: table-row;
+    }
+
+    label {
+      display: table-cell;
+    }
+
+    .input-field {
+      display: table-cell;
+      align: right;
+      margin-bottom: 20px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <div align="center">
+      <h2>Source and Destination</h2>
+      <form>
+        <p>
+          <label for="location">Location:</label>
+          <input id="location" type="text" placeholder="Enter location">
+        </p>
+        <p>
+          <label for="destination">Destination:</label>
+          <input id="destination" type="text" placeholder="Enter destination">
+        </p>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+    <div align="center">
+      <img src="1stFloor.png" alt="Map">
+    </div>
+  </div>
+</body>
+
+</html>
