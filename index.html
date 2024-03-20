@@ -1,36 +1,164 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صفحة الجوال</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PathIn</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    .navbar {
+      background-color: #333;
+      color: white;
+      padding: 1%;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 2;
+      transition: height 0.5s;
+    }
 
-        h1 {
-            text-align: center;
-        }
+    .navbar:hover {
+      height: 100px;
+    }
 
-        p {
-            text-align: justify;
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+      border-radius: 10px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: blue;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .background-image {
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      transform: scale(1);
+      transition: transform 0.5s;
+    }
+
+    .background-image:hover img {
+      transform: scale(1.2);
+    }
+
+    @media (max-width: 576px) {
+      .container {
+        max-width: 100%;
+        padding: 10px;
+        border-radius: 0;
+      }
+
+      .navbar {
+        padding: 10px;
+      }
+    }
+  </style>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const backgroundImg = document.querySelector('.background-image img');
+      const navbar = document.querySelector('.navbar');
+
+      backgroundImg.addEventListener('touchstart', () => {
+        navbar.style.height = '20px';
+      });
+
+      backgroundImg.addEventListener('touchend', () => {
+        navbar.style.height = '100px';
+      });
+
+      backgroundImg.addEventListener('pinchstart', (event) => {
+        const initialDistance = getDistance(event.touches[0], event.touches[1]);
+        backgroundImg.addEventListener('pinchmove', pinchMoveHandler);
+
+        function pinchMoveHandler(event) {
+          const currentDistance = getDistance(event.touches[0], event.touches[1]);
+          const scale = currentDistance / initialDistance;
+          backgroundImg.style.transform = `scale(${scale})`;
         }
-    </style>
+      });
+
+      backgroundImg.addEventListener('pinchend', () => {
+        backgroundImg.removeEventListener('pinchmove', pinchMoveHandler);
+      });
+
+      function getDistance(touch1, touch2) {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+    });
+  </script>
 </head>
+
 <body>
-    <div class="container">
-        <h1>مرحبًا بك في صفحة الجوال</h1>
-        <p>
-            هذا مثال لصفحة HTML مستهدفة للجوالات. يتم استخدام وسم <code>&lt;meta&gt;</code> الذي يحمل الخاصية <code>viewport</code> لتحديد عرض المشاهدة ومقياسه الابتدائي.
-            النمط المدمج في الوثيقة يتم استخدامه لتحقيق تنسيق مناسب للعناصر في الصفحة وضبط عرض الحاوية حسب الحاجة.
-        </p>
+  <div class="navbar">
+    <h2>PathIn</h2>
+    <div>
+      <form style="margin-top: 1px;">
+        <h2>Source and Destination</h2>
+        <label for="location">Location:</label>
+        <input id="location" type="text" placeholder="Enter location">
+        <label for="destination">Destination:</label>
+        <input id="destination" type="text" placeholder="Enter destination">
+        <button type="submit">Submit</button>
+      </form>
     </div>
+  </div>
+
+  <div class="background-image">
+    <img src="1stFloor.png" alt="Map">
+  </div>
+
+  <div class="container">
+    <!-- محتوى العنصر -->
+  </div>
 </body>
+
 </html>
