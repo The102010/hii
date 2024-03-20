@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PathIn</title>
-  <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/zephyr/bootstrap.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -42,8 +41,6 @@
     }
 
     form {
-      width: 90%;
-      height:20%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -76,19 +73,21 @@
 
     .background-image {
       text-align: center;
+      position: relative;
+      overflow: hidden;
+      height: 100vh;
     }
 
     img {
-      max-width: 100%;
-      height: auto;
       width: 100%;
-
-      transform: rotate(90deg);
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1);
       transition: transform 0.5s;
     }
 
     .background-image:hover img {
-      transform: rotate(0deg);
+      transform: scale(1.2);
     }
 
     @media (max-width: 576px) {
@@ -96,10 +95,6 @@
         max-width: 100%;
         padding: 10px;
         border-radius: 0;
-      }
-
-      .background-image img {
-        max-height: 100vh;
       }
 
       .navbar {
@@ -120,13 +115,26 @@
         navbar.style.height = '100px';
       });
 
-      navbar.addEventListener('touchstart', () => {
-        backgroundImg.style.transform = 'rotate(90deg)';
+      backgroundImg.addEventListener('pinchstart', (event) => {
+        const initialDistance = getDistance(event.touches[0], event.touches[1]);
+        backgroundImg.addEventListener('pinchmove', pinchMoveHandler);
+
+        function pinchMoveHandler(event) {
+          const currentDistance = getDistance(event.touches[0], event.touches[1]);
+          const scale = currentDistance / initialDistance;
+          backgroundImg.style.transform = `scale(${scale})`;
+        }
       });
 
-      navbar.addEventListener('touchend', () => {
-        backgroundImg.style.transform = 'rotate(0deg)';
+      backgroundImg.addEventListener('pinchend', () => {
+        backgroundImg.removeEventListener('pinchmove', pinchMoveHandler);
       });
+
+      function getDistance(touch1, touch2) {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
     });
   </script>
 </head>
