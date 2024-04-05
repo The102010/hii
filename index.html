@@ -1,165 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PathIn</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>h10endلعبة تخمين الكلمات</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #cfe8f6;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+  }
+  .header {
+    background-color: #5F9EA0;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .input-group input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    margin: 0 10px;
+    border-radius: 20px;
+    border: 2px solid #AED6F1;
+    font-size: 16px;
+  }
+  .word-counter {
+    background-color: #FCF3CF;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+  .list-container {
+    background-color: #B8D1D9;
+    border-radius: 20px; /* يجعل زوايا العنصر دائرية بنصف قطر 20px */
+    background-size:500px;
 
-    .navbar {
-      background-color: #333;
-      color: white;
-      padding: 1%;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 2;
-      transition: height 0.5s;
-    }
+    width: 80%;
+    max-width: 500px;
+    margin: 20px 0;
 
-    .navbar:hover {
-      height: 100px;
-    }
+  }
+  
+  .word-box {
+    background-color: #76D7C4;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+  }
+  .score {
+    background-color: #FCF3CF;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-left: 15px;
+  }
+</style>
+<div class="header">كلمتي</div>
 
-    .container {
-      max-width: 100%;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f4f4f4;
-      border-radius: 10px;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin-bottom: 20px;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: blue;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .background-image {
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    img {
-      width: 100%;
-      height: auto;
-      transform: scale(1);
-      transition: transform 0.5s;
-    }
-
-    .background-image:hover img {
-      transform: scale(1.2);
-    }
-
-    @media (max-width: 576px) {
-      .container {
-        max-width: 100%;
-        padding: 10px;
-        border-radius: 0;
-      }
-
-      .navbar {
-        padding: 10px;
-      }
-    }
-  </style>
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const backgroundImg = document.querySelector('.background-image img');
-      const navbar = document.querySelector('.navbar');
-
-      backgroundImg.addEventListener('touchstart', () => {
-        navbar.style.height = '20px';
-      });
-
-      backgroundImg.addEventListener('touchend', () => {
-        navbar.style.height = '100px';
-      });
-
-      backgroundImg.addEventListener('pinchstart', (event) => {
-        const initialDistance = getDistance(event.touches[0], event.touches[1]);
-        backgroundImg.addEventListener('pinchmove', pinchMoveHandler);
-
-        function pinchMoveHandler(event) {
-          const currentDistance = getDistance(event.touches[0], event.touches[1]);
-          const scale = currentDistance / initialDistance;
-          backgroundImg.style.transform = `scale(${scale})`;
-        }
-      });
-
-      backgroundImg.addEventListener('pinchend', () => {
-        backgroundImg.removeEventListener('pinchmove', pinchMoveHandler);
-      });
-
-      function getDistance(touch1, touch2) {
-        const dx = touch1.clientX - touch2.clientX;
-        const dy = touch1.clientY - touch2.clientY;
-        return Math.sqrt(dx * dx + dy * dy);
-      }
-    });
-  </script>
 </head>
-
 <body>
-  <div class="navbar">
-    <h2>PathIn</h2>
-    <div>
-      <form style="margin-top: 1px;">
-        <h2>Source and Destination</h2>
-        <label for="location">Location:</label>
-        <input id="location" type="text" placeholder="Enter location">
-        <label for="destination">Destination:</label>
-        <input id="destination" type="text" placeholder="Enter destination">
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  </div>
 
-  <div class="background-image">
-    <img src="1stFloor.png" alt="Map">
-  </div>
+<!-- <div class="header">كلمتي</div> -->
 
-  <div class="container">
-    <!-- محتوى العنصر -->
-  </div>
+<div class="input-group">
+  <div class="menu-icon">&#9776;</div>
+  <input type="text" id="wordInput" placeholder="أكتب كلمة" onkeypress="handleKeyPress(event)">
+  <div class="word-counter" id="wordCounter">0</div>
+</div>
+
+<div class="list-container" id="wordsList">
+  <!-- الكلمات المضافة ستظهر هنا -->
+</div>
+
+<script>
+let wordCount = 0;
+
+function addWord() {
+  var input = document.getElementById('wordInput');
+  var word = input.value.trim();
+  var counter = document.getElementById('wordCounter');
+
+  if (word) {
+    var wordsList = document.getElementById('wordsList');
+    var newWordDiv = document.createElement('div');
+    newWordDiv.className = 'word-box';
+    newWordDiv.innerHTML = '<span>' + word + '</span><span class="score">0</span>';
+    wordsList.appendChild(newWordDiv);
+    input.value = '';
+    wordCount++;
+    counter.textContent = wordCount;
+  }
+}
+
+function handleKeyPress(event) {
+  if (event.key === 'Enter') {
+    addWord();
+  }
+}
+</script>
 </body>
-
 </html>
-
