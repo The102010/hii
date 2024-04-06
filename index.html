@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>h10endلعبة تخمين الكلمات</title>
+<title>لعبة تخمين الكلمات</title>
 <style>
   body {
     font-family: 'Arial', sans-serif;
@@ -14,6 +14,7 @@
     flex-direction: column;
     align-items: center;
     height: 100vh;
+    padding: 1%;
   }
   .header {
     background-color: #5F9EA0;
@@ -53,6 +54,7 @@
     font-size: 16px;
   }
   .list-container {
+    display: none;
     background-color: #B8D1D9;
     border-radius: 20px; /* يجعل زوايا العنصر دائرية بنصف قطر 20px */
     background-size:500px;
@@ -60,6 +62,10 @@
     width: 80%;
     max-width: 500px;
     margin: 20px 0;
+    padding-right: 5%; /* حشوة من اليمين */
+    padding-left: 5%;  /* حشوة من اليسار */
+    padding-bottom: 2%;  /* حشوة من اليسار */
+
 
   }
   
@@ -107,6 +113,14 @@ function addWord() {
   var counter = document.getElementById('wordCounter');
 
   if (word) {
+    if(wordCount==0){
+
+      var element = document.getElementById('wordsList');
+      element.style.display = "block";
+      // toggleVisibility('wordsList');
+    }
+    
+
     var wordsList = document.getElementById('wordsList');
     var newWordDiv = document.createElement('div');
     newWordDiv.className = 'word-box';
@@ -123,6 +137,15 @@ function handleKeyPress(event) {
     addWord();
   }
 }
+function toggleVisibility(ElementId) {//مازبط 
+  var element = document.getElementById(ElementId);
+  if (element.style.display === "none") {
+    element.style.display = "block";
+  } else {
+    element.style.display = "none";
+  }
+}
+
 </script>
 </body>
 </html>
