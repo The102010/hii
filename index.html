@@ -203,9 +203,7 @@ document.getElementById('openScanner').addEventListener('click', function() {
     qrCodeReader.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
         function(decodedText, decodedResult) {
             // This function is called when a QR code is detected
-            // alert('QR Code content: ' + decodedText);
-                window.location.href = decodedText;//تحيات ابو فليج 
-
+            alert('QR Code content: ' + decodedText);
             // Optionally stop the scanner after a QR code is scanned
             qrCodeReader.stop().then(() => {
                 qrReaderElement.style.display = 'none'; // Hide the scanner view
@@ -335,3 +333,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
