@@ -211,20 +211,12 @@ document.getElementById('openScanner').addEventListener('click', function() {
     const qrReaderElement = document.getElementById('qr-reader');
     qrReaderElement.style.display = 'block'; // Show the QR scanner
 
-    // Hide other elements
-    document.querySelector('header').style.display = 'none';
-    document.querySelector('main').style.display = 'none';
-    document.querySelector('footer').style.display = 'none';
-
     const qrCodeReader = new Html5Qrcode("qr-reader");
     qrCodeReader.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
         function(decodedText, decodedResult) {
+            // This function is called when a QR code is detected
             alert('QR Code content: ' + decodedText);
-            // Show other elements again
-            document.querySelector('header').style.display = '';
-            document.querySelector('main').style.display = '';
-            document.querySelector('footer').style.display = '';
-
+            // Optionally stop the scanner after a QR code is scanned
             qrCodeReader.stop().then(() => {
                 qrReaderElement.style.display = 'none'; // Hide the scanner view
             }).catch((err) => {
@@ -239,11 +231,6 @@ document.getElementById('openScanner').addEventListener('click', function() {
         // Handle errors in starting the scanner
         console.error('Error starting QR scanner:', err);
         alert('Error starting QR scanner.');
-
-        // Show other elements again in case of error
-        document.querySelector('header').style.display = '';
-        document.querySelector('main').style.display = '';
-        document.querySelector('footer').style.display = '';
     });
 });
 </script>
