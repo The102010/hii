@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PathIn</title>
+    <title>Path-In</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <style>
@@ -99,7 +99,7 @@ button:hover {
 }
 
         .floor-map img {
-            width: 200vw; /* تحديد عرض الصورة بأكبر من عرض النافذة */
+            width: auto; /* تحديد عرض الصورة بأكبر من عرض النافذة */
             max-width: none; /* تعطيل تقييد العرض الأقصى */
             height: 100%; /* ضمان ملء الصورة للمساحة المتوفرة بالارتفاع */
             pointer-events: none; /* تعطيل جميع التفاعلات الماوس على الصورة */
@@ -129,6 +129,18 @@ button:hover {
     border: 1.5px solid #b2b2b2;
     border-radius: 0.25em;
     box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25);
+}
+        #qr-reader {
+    position: fixed; /* Fixed positioning to make it float over other content */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    width: 300px; /* Fixed width */
+    height: 300px; /* Fixed height */
+    transform: translate(-50%, -50%); /* Adjust position to truly center based on its size */
+    z-index: 1000; /* High z-index to ensure it appears above other content */
+    border: 3px solid #fff; /* Optional: adds a border around the scanner */
+    box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.5); /* Optional: adds shadow for better visibility */
+    display: none; /* Start hidden */
 }
     </style>
 </head>
@@ -169,8 +181,8 @@ button:hover {
            <img src="{% static 'img/number-2.png' %}" alt="2nd Floor">
         </button>
        <div class="centered-container">
-    <button id="openScanner">Scan QR Code</button>
-    <div id="qr-reader" style="width: 300px; height: 300px; display: none;"></div>
+    <button id="openScanner">QR</button>
+<div id="qr-reader" style="display: none;"></div>
 </div>
     </div>
 </div>
@@ -199,12 +211,20 @@ document.getElementById('openScanner').addEventListener('click', function() {
     const qrReaderElement = document.getElementById('qr-reader');
     qrReaderElement.style.display = 'block'; // Show the QR scanner
 
+    // Hide other elements
+    document.querySelector('header').style.display = 'none';
+    document.querySelector('main').style.display = 'none';
+    document.querySelector('footer').style.display = 'none';
+
     const qrCodeReader = new Html5Qrcode("qr-reader");
     qrCodeReader.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
         function(decodedText, decodedResult) {
-            // This function is called when a QR code is detected
             alert('QR Code content: ' + decodedText);
-            // Optionally stop the scanner after a QR code is scanned
+            // Show other elements again
+            document.querySelector('header').style.display = '';
+            document.querySelector('main').style.display = '';
+            document.querySelector('footer').style.display = '';
+
             qrCodeReader.stop().then(() => {
                 qrReaderElement.style.display = 'none'; // Hide the scanner view
             }).catch((err) => {
@@ -219,9 +239,13 @@ document.getElementById('openScanner').addEventListener('click', function() {
         // Handle errors in starting the scanner
         console.error('Error starting QR scanner:', err);
         alert('Error starting QR scanner.');
+
+        // Show other elements again in case of error
+        document.querySelector('header').style.display = '';
+        document.querySelector('main').style.display = '';
+        document.querySelector('footer').style.display = '';
     });
 });
-</script>
 </script>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -333,4 +357,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
