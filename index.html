@@ -1,151 +1,335 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+{% load static %}
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لعبة تخمين الكلمات</title>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #cfe8f6;
-    margin: 0;
-    padding: 0;
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path-In</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <style>
+       body {
+    background-image: url("img/background.png");
+    background-repeat: repeat;
+    font-family: Arial, sans-serif; /* Improved readability on small devices */
+}
+
+nav {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    height: 100vh;
-    padding: 5px;
-  }
-  .header {
-    background-color: #5F9EA0;
+    padding: 1rem;
+    background-color: #1b6a8f;
+}
+
+.image1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures full image coverage */
+}
+span {
+    font-weight: bold;
+    font-family: 'Lobster', cursive;
+    font-size: 1.5rem;
     color: white;
+}
+
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type="text"] {
+    width: 90%; /* Adjusted for mobile */
+    margin: 10px 0; /* More space between inputs */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+input[type="text"]:focus {
+    border-color: #4CAF50;
+    border-bottom: 2px solid #4CAF50;
+}
+button {
+    background-color: #3493C5;
+    border: none;
+    color: white;
+    padding: 12px 20px;
     text-align: center;
-    padding: 20px;
-    font-size: 24px;
+    text-decoration: none;
+    display: block; /* Full width for mobile */
     width: 100%;
-    box-sizing: border-box;
-  }
-  .menu-icon {
-    font-size: 24px;
-    cursor: pointer;
-  }
-  .input-group {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-    margin: 20px 0;
-    padding: 10px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  .input-group input[type="text"] {
-    flex-grow: 1;
-    padding: 10px;
-    margin: 0 10px;
-    border-radius: 20px;
-    border: 2px solid #AED6F1;
-    font-size: 16px;
-  }
-  .word-counter {
-    background-color: #FCF3CF;
-    padding: 5px 10px;
-    border-radius: 10px;
-    font-size: 16px;
-  }
-  .list-container {
-    display: none;
-    background-color: #B8D1D9;
-    border-radius: 20px; /* يجعل زوايا العنصر دائرية بنصف قطر 20px */
-    background-size:500px;
-
-    width: 80%;
-    max-width: 500px;
-    margin: 20px 0;
-    padding-right: 5%; /* حشوة من اليمين */
-    padding-left: 5%;  /* حشوة من اليسار */
-    padding-bottom: 2%;  /* حشوة من اليسار */
-
-
-  }
-  
-  .word-box {
-    background-color: #76D7C4;
     margin: 10px 0;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 18px;
-  }
-  .score {
-    background-color: #FCF3CF;
-    padding: 5px 10px;
-    border-radius: 10px;
-    margin-left: 15px;
-  }
-</style>
-<div class="header">كلمتي</div>
+    cursor: pointer;
+    font-size: 16px;
+}
 
+button:hover {
+    background-color: #2B6D8F;
+    box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+}
+
+ /* .floor-map {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+         */
+         .floor-map {
+    width: 100vw;
+    flex-grow: 1; /* يستخدم لملء المساحة المتبقية */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+        .floor-map img {
+            width: 200vw; /* تحديد عرض الصورة بأكبر من عرض النافذة */
+            max-width: none; /* تعطيل تقييد العرض الأقصى */
+            height: 100%; /* ضمان ملء الصورة للمساحة المتوفرة بالارتفاع */
+            pointer-events: none; /* تعطيل جميع التفاعلات الماوس على الصورة */
+        }
+
+         #selected {
+        border: 2px solid #900000;
+        background-color: "red";
+        }
+#form-section {
+    background-color: #f2f2f2;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.floor-selection img {
+    width: 40px; /* Smaller icons for mobile */
+    height: 40px;
+    transition: transform 0.3s;
+}
+.floor-selection button:hover img {
+    transform: scale(1.1);
+}
+        .section {
+    background-color: #ffffff;
+    padding: 50px 30px;
+    border: 1.5px solid #b2b2b2;
+    border-radius: 0.25em;
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25);
+}
+    </style>
 </head>
 <body>
+<nav>
+    <span>PathIn</span>
+</nav>
+<script>
+        function validateForm() {
+            var location = document.getElementById('loc').value;
+            var destination = document.getElementById('dest').value;
+            if (location.trim() === '' || destination.trim() === '') {
+                alert('يرجى ملء كلا الحقلين: الموقع والوجهة.');
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
+    </script>
+<div id="section1" dir="rtl">
+    <div class="centered-container">
+        <form method="post" action="{% url 'index' %}" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <input class="point" id="loc" name="location" type="text" placeholder="أدخل موقعك" value="{{source}}">
+            <input class="point" name="destination" type="text" placeholder="أدخل وجهتك">
+            <button type="submit">ابحث</button>
+        </form>
+    </div>
+    <div class="floor-selection centered-container">
+        <h3>اختر الطابق:</h3>
 
-<!-- <div class="header">كلمتي</div> -->
-
-<div class="input-group">
-  <div class="menu-icon">&#9776;</div>
-  <input type="text" id="wordInput" placeholder="أكتب كلمة" onkeypress="handleKeyPress(event)">
-  <div class="word-counter" id="wordCounter">0</div>
+        <button id="{{select0}}" onclick="showFloorMap(0)">
+           <img src="{% static 'img/letter-g.png' %}" alt="Ground Floor">
+        </button>
+        <button id="{{select1}}" onclick="showFloorMap(1)">
+             <img src="{% static 'img/number-one.png' %}" alt="1st Floor">
+        </button>
+        <button id="{{select2}}" onclick="showFloorMap(2)">
+           <img src="{% static 'img/number-2.png' %}" alt="2nd Floor">
+        </button>
+       <div class="centered-container">
+    <button id="openScanner">Scan QR Code</button>
+    <div id="qr-reader" style="width: 300px; height: 300px; display: none;"></div>
 </div>
-
-<div class="list-container" id="wordsList">
-  <!-- الكلمات المضافة ستظهر هنا -->
+    </div>
 </div>
+    <div id="floor0" class="floor-map">
+    <img class="image1" src="{% static GFloor_url %}" alt="Ground Floor Map">
+</div>
+<div id="floor1" class="floor-map">
+    <img class="image1" src="{% static 1stFloor_url %}" alt="1st Floor Map">
+</div>
+<div id="floor2" class="floor-map">
+    <img class="image1" src="{% static 2ndFloor_url %}" alt="2nd Floor Map">
+</div>
+{% if messages %}
+    <script type="text/javascript">
+    window.addEventListener('load', function() {
+        {% for message in messages %}
+            alert("{{ message }}");
+        {% endfor %}
+    });
+    </script>
+ {% endif %}
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
-let wordCount = 0;
+document.getElementById('openScanner').addEventListener('click', function() {
+    const qrReaderElement = document.getElementById('qr-reader');
+    qrReaderElement.style.display = 'block'; // Show the QR scanner
 
-function addWord() {
-  var input = document.getElementById('wordInput');
-  var word = input.value.trim();
-  var counter = document.getElementById('wordCounter');
+    const qrCodeReader = new Html5Qrcode("qr-reader");
+    qrCodeReader.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
+        function(decodedText, decodedResult) {
+            // This function is called when a QR code is detected
+            alert('QR Code content: ' + decodedText);
+            // Optionally stop the scanner after a QR code is scanned
+            qrCodeReader.stop().then(() => {
+                qrReaderElement.style.display = 'none'; // Hide the scanner view
+            }).catch((err) => {
+                console.error('Error stopping the QR scanner', err);
+            });
+        },
+        function(error) {
+            // Handle scanning errors
+            console.log('Error scanning QR code:', error);
+        }
+    ).catch((err) => {
+        // Handle errors in starting the scanner
+        console.error('Error starting QR scanner:', err);
+        alert('Error starting QR scanner.');
+    });
+});
+</script>
+</script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+  $( function() {
+    $( ".point" ).autocomplete({
+      source: '{% url 'autocomplete' %}'
 
-  if (word) {
-    if(wordCount==0){
+    });
+  } );
+  </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    adjustFloorMapHeight();
+    showFloorMap(1); // تعديل إذا كان ترقيم الطوابق لديك مختلف
+});
 
-      var element = document.getElementById('wordsList');
-      element.style.display = "block";
-      // toggleVisibility('wordsList');
+function adjustFloorMapHeight() {
+    var navHeight = document.querySelector('nav').offsetHeight;
+    var formHeight = document.querySelector('#section1').offsetHeight;
+    var totalUsedHeight = navHeight + formHeight;
+    var availableHeight = window.innerHeight - totalUsedHeight;
+
+    var floorMaps = document.querySelectorAll('.floor-map');
+    floorMaps.forEach(function(map) {
+        map.style.height = availableHeight + 'px'; // تعيين الارتفاع المتبقي للخرائط
+    });
+}
+
+window.addEventListener('resize', adjustFloorMapHeight); // ضبط الارتفاع عند تغيير حجم النافذة
+
+ document.addEventListener('DOMContentLoaded', function() {
+    var currentFloorMap = document.querySelector('.floor-map.active'); // Select the active map
+    var mapImage = currentFloorMap ? currentFloorMap.querySelector('.image1') : null;
+
+    if (mapImage) { // Only proceed if an image is found
+        var isDragging = false;
+        var originalX = 0;
+        var originalY = 0;
+        var translateX = 0;
+        var translateY = 0;
+
+        mapImage.addEventListener('mousedown', function(event) {
+            isDragging = true;
+            originalX = event.clientX - translateX;
+            originalY = event.clientY - translateY;
+            // Prevent default dragging behavior
+            event.preventDefault();
+        });
+
+        document.addEventListener('mousemove', function(event) {
+            if (isDragging) {
+                translateX = event.clientX - originalX;
+                translateY = event.clientY - originalY;
+
+                // Constrain movement within viewport boundaries
+                var maxOffsetX = currentFloorMap.offsetWidth - mapImage.offsetWidth;
+                var maxOffsetY = currentFloorMap.offsetHeight - mapImage.offsetHeight;
+
+                // Limit horizontal and vertical drag
+                translateX = Math.min(Math.max(translateX, -mapImage.offsetWidth + currentFloorMap.offsetWidth), 0);
+                translateY = Math.min(Math.max(translateY, -mapImage.offsetHeight + currentFloorMap.offsetHeight), 0);
+
+                mapImage.style.transform = 'translate(' + translateX + 'px, ' + translateY + 'px)';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+
+        document.addEventListener('mouseleave', function() {
+            if (isDragging) {
+                isDragging = false; // Stop dragging if the mouse leaves the document
+            }
+        });
     }
-    
+});
+        function showFloorMap(floorNumber) {
+    // Hide all floor maps
+    var maps = document.querySelectorAll('.floor-map');
+    maps.forEach(function(map) {
+        map.style.display = 'none';
+    });
 
-    var wordsList = document.getElementById('wordsList');
-    var newWordDiv = document.createElement('div');
-    newWordDiv.className = 'word-box';
-    newWordDiv.innerHTML = '<span>' + word + '</span><span class="score">0</span>';
-    wordsList.appendChild(newWordDiv);
-    input.value = '';
-    wordCount++;
-    counter.textContent = wordCount;
-  }
+    // Show the selected floor map
+    var selectedMap = document.getElementById('floor' + floorNumber);
+    if (selectedMap) {
+        console.log('Found floor map for floor:', floorNumber); // Log success
+        selectedMap.style.display = 'flex';
+    } else {
+        console.log('No floor map found for floor:', floorNumber); // Log failure
+    }
 }
-
-function handleKeyPress(event) {
-  if (event.key === 'Enter') {
-    addWord();
-  }
-}
-function toggleVisibility(ElementId) {//مازبط 
-  var element = document.getElementById(ElementId);
-  if (element.style.display === "none") {
-    element.style.display = "block";
-  } else {
-    element.style.display = "none";
-  }
-}
-
+    $(document).ready(function() {
+        $("#loc").keyup(function() {
+            var text = $(this).text().slice(0, -1)
+var defaultLink = "/path/"
+var pathlink = "/path/path?loc="
+var position = arr.indexOf(text)
+position == -1 ? arr.push(text) : arr.splice(position, 1)
+$('.ecmt-button').attr('href', arr.length == 0 ? defaultLink : pathlink + arr.join())
+        });
+    });
+// Call showFloorMap for the 1st floor on page load
+document.addEventListener('DOMContentLoaded', function() {
+    showFloorMap(1); // Adjust the index if your floor numbering is different
+});
 </script>
 </body>
 </html>
