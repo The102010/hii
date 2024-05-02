@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PathzzzIn</title>
+    <title>Path-In</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <style>
@@ -130,17 +130,63 @@ button:hover {
     border-radius: 0.25em;
     box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25);
 }
-        #qr-reader {
-    position: fixed; /* Fixed positioning to make it float over other content */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    width: 300px; /* Fixed width */
-    height: 300px; /* Fixed height */
-    transform: translate(-50%, -50%); /* Adjust position to truly center based on its size */
+   #qr-reader {
+    position: fixed; /* Fixed positioning to float over other content */
+    top: 0; /* Start at the top of the viewport */
+    left: 0; /* Start at the left of the viewport */
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    display: flex; /* Use flex to center the scanner box */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background for the overlay */
     z-index: 1000; /* High z-index to ensure it appears above other content */
-    border: 3px solid #fff; /* Optional: adds a border around the scanner */
-    box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.5); /* Optional: adds shadow for better visibility */
-    display: none; /* Start hidden */
+    border: none; /* No border for the full overlay */
+    box-shadow: none; /* No shadow for the full overlay */
+}
+button.scanner {
+    padding: 8px 16px; /* Smaller padding to reduce overall size */
+    background-color: #5daed4; /* A lighter shade of blue */
+    color: white; /* Keeps the text color white for contrast */
+    border-radius: 4px; /* Optional: adds rounded corners */
+    border: none; /* Removes border */
+    font-size: 14px; /* Smaller font size */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow for depth */
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+}
+
+button.scanner:hover {
+    background-color: #6ec1e4; /* Even lighter shade on hover */
+}
+
+button.scanner img {
+    width: 20px; /* Adjust the image size to be smaller */
+    height: auto; /* Maintain aspect ratio */
+    vertical-align: middle; /* Aligns the image vertically with any text or purely centers it */
+}
+#qr-reader-inner {
+    width: 80vw; /* Adjust width for mobile screens */
+    max-width: 300px; /* Max width for larger screens */
+    height: 80vw; /* Height relative to the width to maintain aspect ratio */
+    max-height: 300px; /* Max height for larger screens */
+    border: 3px solid #fff; /* Adds a border around the scanner */
+    box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.5); /* Adds shadow for better visibility */
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 600px) {
+    #qr-reader-inner {
+        width: 90vw; /* Use a larger percentage of the screen width */
+        height: 90vw; /* Maintain aspect ratio */
+        top: 50%; /* Center vertically */
+        left: -10%; /* Center horizontally */
+    }
+}
+        .hidden {
+    display: none;
+}
+.visible {
+    display: block;
 }
     </style>
 </head>
@@ -180,11 +226,14 @@ button:hover {
         <button id="{{select2}}" onclick="showFloorMap(2)">
            <img src="{% static 'img/number-2.png' %}" alt="2nd Floor">
         </button>
-       <div class="centered-container">
-    <button id="openScanner">QR</button>
-<div id="qr-reader" style="display: none;"></div>
+<div class="centered-container">
+    <button id="openScanner" class="scanner"><img src="{% static 'img/qr-code-scan.png' %}" alt="scan"></button>
+<div id="qr-reader" style="display: none;">
+    <div id="qr-reader-inner" onclick="event.stopPropagation();"></div> <!-- Scanner will appear here -->
+</div>
 </div>
     </div>
+
 </div>
     <div id="floor0" class="floor-map">
     <img class="image1" src="{% static GFloor_url %}" alt="Ground Floor Map">
@@ -209,30 +258,41 @@ button:hover {
 <script>
 document.getElementById('openScanner').addEventListener('click', function() {
     const qrReaderElement = document.getElementById('qr-reader');
-    qrReaderElement.style.display = 'block'; // Show the QR scanner
+    qrReaderElement.style.display = 'block'; // Show the full overlay
 
-    const qrCodeReader = new Html5Qrcode("qr-reader");
+    const qrCodeReader = new Html5Qrcode("qr-reader-inner");
     qrCodeReader.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
         function(decodedText, decodedResult) {
-            // This function is called when a QR code is detected
-            alert('QR Code content: ' + decodedText);
-            // Optionally stop the scanner after a QR code is scanned
-            qrCodeReader.stop().then(() => {
-                qrReaderElement.style.display = 'none'; // Hide the scanner view
-            }).catch((err) => {
-                console.error('Error stopping the QR scanner', err);
-            });
+        window.location.href =decodedText;
+            closeScanner();
         },
         function(error) {
-            // Handle scanning errors
             console.log('Error scanning QR code:', error);
         }
     ).catch((err) => {
-        // Handle errors in starting the scanner
         console.error('Error starting QR scanner:', err);
         alert('Error starting QR scanner.');
     });
+
+    // Close scanner if clicking outside the QR scanner inner area
+    qrReaderElement.addEventListener('click', function() {
+        closeScanner();
+    });
 });
+
+function closeScanner() {
+    const qrReaderElement = document.getElementById('qr-reader');
+    if (window.qrCodeReader) {
+        window.qrCodeReader.stop().then(() => {
+            qrReaderElement.style.display = 'none'; // Hide the scanner view
+            qrReaderElement.removeEventListener('click', closeScanner); // Remove listener to prevent memory leaks
+        }).catch((err) => {
+            console.error('Error stopping the QR scanner', err);
+        });
+    } else {
+        qrReaderElement.style.display = 'none';
+    }
+}
 </script>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
